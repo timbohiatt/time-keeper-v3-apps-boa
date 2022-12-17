@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: bank-of-anthos 
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - cluster: europe-west6 
+        url: https://192.168.0.2
+      - cluster: australia-southeast1
+        url: https://172.16.0.18
+  template:
+    metadata:
+      name: '{{cluster}}-bank-of-anthos'
+    spec:
+      project: apps-bank-of-anthos
+      source:
+        repoURL: https://github.com/timbohiatt/time-keeper-v3-apps-boa.git
+        targetRevision: HEAD
+        path: deployment/manifests
+      destination:
+        server: '{{url}}'
+        namespace: bank-of-anthos 

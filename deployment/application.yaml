@@ -1,24 +1,38 @@
+---
 apiVersion: argoproj.io/v1alpha1
-kind: ApplicationSet
+kind: Application
 metadata:
-  name: guestbook
+  name: bank-of-anthos-euw6 
+  namespace: argocd 
 spec:
-  generators:
-  - list:
-      elements:
-      - cluster: europe-west6 
-        url: https://192.168.0.2
-      - cluster: australia-southeast1
-        url: https://172.16.0.18
-  template:
-    metadata:
-      name: '{{cluster}}-bank-of-anthos'
-    spec:
-      project: apps-bank-of-anthos
-      source:
-        repoURL: https://github.com/timbohiatt/time-keeper-v3-apps-boa.git
-        targetRevision: HEAD
-        path: deployment/manifests
-      destination:
-        server: '{{url}}'
-        namespace: bank-of-anthos 
+  project: app-bank-of-anthos 
+  source:
+    repoURL: https://github.com/timbohiatt/time-keeper-v3-apps-boa.git 
+    targetRevision: HEAD
+    path: deployment/manifests
+  destination:
+    server: https://192.168.0.2
+    namespace: app-bank-of-anthos
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bank-of-anthos-ausse1
+  namespace: argocd 
+spec:
+  project: app-bank-of-anthos
+  source:
+    repoURL: https://github.com/timbohiatt/time-keeper-v3-apps-boa.git 
+    targetRevision: HEAD
+    path: deployment/manifests
+  destination:
+    server: https://172.16.0.18
+    namespace: app-bank-of-anthos
+  syncPolicy:
+    automated:
+      selfHeal: true
+      prune: true
